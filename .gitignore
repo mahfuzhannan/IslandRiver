@@ -1,0 +1,11 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/workspace.xml
+WebECommerce/__init__.pyc
+WebECommerce/settings.pyc
+WebECommerce/urls.pyc
+webapp/__init__.pyc
+webapp/admin.pyc
+webapp/migrations/__init__.pyc
+webapp/models.pyc
+webapp/urls.pyc
+webapp/views.pyc
