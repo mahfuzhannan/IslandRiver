@@ -8,4 +8,8 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^shop/$', views.shop, name='shop'),
     url(r'^basket/$', views.basket, name='basket'),
+    url(r'^setup/$', views.setup_shop, name='setup'),
+
+
+    url(r'^items/$', views.get_items),
 ]

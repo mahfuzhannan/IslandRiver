@@ -1,0 +1,17 @@
+body {
+    min-height: 900px;
+    padding-top: 40px;
+}
+
+
+.header {
+    height: 400px;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+.text-white {
+    color: white;
+}

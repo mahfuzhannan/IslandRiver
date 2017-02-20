@@ -1,0 +1,33 @@
+{% extends "app/main.html" %}
+{% block content %}
+    {% verbatim %}
+    <div ng-controller="shopController as shop" ng-init="getItems()">
+        <h1 class="alert alert-primary text-center"><a href="/">S H O P</a></h1>
+
+        <!-- Items -->
+        <div>
+            <div class="row">
+                <div ng-repeat="item in items">
+                    <div class="clearfix" ng-if="$index % 4 == 0"></div>
+                    <div class="col-sm-3">
+                        <div class="panel">
+                            <div class="panel-body text-center">
+                                <h3>{{ item.fields.name }}</h3>
+                                <div href="#" class="thumbnail">
+                                    <img src="{{ '/static/app/' + item.fields.img }}" class="img-responsive" style="max-height: 250px;">
+                                    <div class="caption">
+                                        <p>{{ item.fields.desc }}</p>
+                                    </div>
+                                </div>
+                                <p>£{{ item.fields.price }}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endverbatim %}
+{% endblock %}
