@@ -123,3 +123,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+AUTH_USER_MODEL = 'app.User'
+# LOGIN_REDIRECT_URL = 'shop'
+

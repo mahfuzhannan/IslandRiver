@@ -1,37 +1,41 @@
 {% extends "app/main.html" %}
 {% block content %}
-    <main class="page-wrap" ng-controller="loginController as login">
-        <div class="container">
-            <h1 class="alert alert-primary text-center"><a href="/">L O G I N</a></h1>
-            <div class="panel panel-small panel-default">
-                <div class="panel-body text-center">
-                    <h3>Log in to your account</h3>
-                    <form class="form">
-{#                        <div class="form-group alert alert-danger" ng-show="error">#}
-{#                            <p>{{error}}</p>#}
-{#                        </div>#}
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="email"> <i class="fa fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Email address" aria-describedby="email" ng-model="email">
-                            </div>
+<main class="page-wrap">
+    <div class="container">
+        <h1 class="alert alert-primary text-center"><a href="/">L O G I N</a></h1>
+        <div class="panel panel-small panel-default">
+            <div class="panel-body text-center">
+                <h4 class="text-center">Login for E COMMERCE</h4>
+                <form class="form" method="POST">
+                    {% csrf_token %}
+                    {% if error %}
+                    <div class="form-group alert alert-danger">
+                        <p>{{error}}</p>
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="email"> <i class="fa fa-user"></i></span>
+                            <input id="id_username" type="text" class="form-control" placeholder="Email address" aria-describedby="email">
                         </div>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="pass"><i class="fa fa-lock"></i></span>
-                                <input type="password" class="form-control" placeholder="Password" aria-describedby="pass" ng-model="pass">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="pass"><i class="fa fa-lock"></i></span>
+                            <input id="id_password" type="password" class="form-control" placeholder="Password" aria-describedby="pass">
                         </div>
-                        <div class="form-group">
-                            <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Log In" ng-click="login()"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="panel-footer text-center">
-                    <br/>
-                    Haven't used E-commerce before? <a href="/signup">Sign Up!</a>
-                    <br/><br/>
-                </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Login"/>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-center">
+                <br/>
+                Haven't used E-commerce before? <a href="/signup">Sign Up!</a>
+                <br/><br/>
             </div>
         </div>
-    </main>{% endblock %}
+    </div>
+</main>
+{% endblock %}
