@@ -1,55 +1,62 @@
 {% extends "app/main.html" %}
 {% block content %}
-    <div id="main" class="page-wrap" ng-controller="signupController as signup">
+    <div id="main" class="page-wrap">
     <div class="container">
         <h1 class="alert alert-primary text-center"><a href="/">S I G N   U P</a></h1>
         <div class="panel panel-small panel-default">
             <div class="panel-body">
                 <h4 class="text-center">Sign up for E COMMERCE</h4>
-                <form class="form">
-{#                    <div class="form-group alert alert-danger" ng-show="error">#}
-{#                        <p>{{error}}</p>#}
-{#                    </div>#}
+                <form class="form" action="/auth/signup/" method="POST">
+                    {% csrf_token %}
+                    {% if error %}
+                        <div class="form-group alert alert-danger">
+                            <p>{{error}}</p>
+                        </div>
+                    {% endif %}
                     <div class="form-group col-lg-6">
-                        <label for="firstname">First name<i class="required">*</i></label>
-                        <input id="firstname" type="text" class="form-control" placeholder="First name" ng-model="firstname">
+                        <label>First name<i class="required">*</i></label>
+                        {{ form.first_name }}
                     </div>
                     <div class="form-group col-lg-6">
-                        <label for="lastname">Last name<i class="required">*</i></label>
-                        <input id="lastname" type="text" class="form-control" placeholder="Last name" ng-model="lastname">
+                        <label>Last name<i class="required">*</i></label>
+                        {{ form.last_name }}
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="house">House No.<i class="required">*</i></label>
-                        <input id="house" type="text" class="form-control" placeholder="House no." ng-model="house">
+                        <label>House No.<i class="required">*</i></label>
+                        {{ form.house }}
                     </div>
                     <div class="form-group col-md-5">
-                        <label for="line1">Address<i class="required">*</i></label>
-                        <input id="line1" type="text" class="form-control" placeholder="Address Line 1" ng-model="line1">
+                        <label>Address<i class="required">*</i></label>
+                        {{ form.line1 }}
                     </div>
                     <div class="form-group col-md-5">
-                        <label for="line2">Address<i class="required">*</i></label>
-                        <input id="line2" type="text" class="form-control" placeholder="Address Line 2" ng-model="line2">
+                        <label>Postcode<i class="required">*</i></label>
+                        {{ form.postcode }}
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <label>Phone<i class="required">*</i></label>
+                        {{ form.phone }}
                     </div>
                     <hr/>
                     <div class="form-group col-sm-12">
-                        <label for="email">Email<i class="required">*</i></label>
-                        <input id="email" type="email" class="form-control" placeholder="Email" ng-model="email">
+                        <label>Email<i class="required">*</i></label>
+                        {{ form.email }}
                     </div>
                     <div class="form-group col-sm-12">
-                        <label for="pass">Password<i class="required">*</i></label>
-                        <input id="pass" type="password" class="form-control" placeholder="Password" ng-model="pass">
+                        <label>Password<i class="required">*</i></label>
+                        {{ form.password }}
                     </div>
                     <div class="form-group col-sm-12">
-                        <label for="passconfirm">Confirm Password<i class="required">*</i></label>
-                        <input id="passconfirm" type="password" class="form-control" placeholder="Password" ng-model="passconfirm">
+                        <label>Confirm Password<i class="required">*</i></label>
+                        {{ form.password_confirm }}
                     </div>
                     <div class="form-group col-sm-12">
                         <div class="checkbox">
-                            <label><input type="checkbox" value="" ng-model="agree">Accept that you have read and agree to the <a href="">Terms of Service</a> and our <a href="">Privacy Policy</a>.</label>
+                            <label><input type="checkbox" value="">Accept that you have read and agree to the <a href="">Terms of Service</a> and our <a href="">Privacy Policy</a>.</label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Sign Up" ng-click="signup()"/>
+                        <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Sign Up"/>
                     </div>
                 </form>
             </div>
