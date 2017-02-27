@@ -14,5 +14,5 @@ class SignupForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'type':'email'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'type':'email'}))
     password = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'type':'password'}))

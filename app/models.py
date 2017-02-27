@@ -23,17 +23,6 @@ class Basket(models.Model):
     # user = models.OneToOneField(user)
 
 
-# Create your models here.
-# class UserManager(BaseUserManager):
-#     def create_user(self, email, password=None, **kwargs):
-#         user = self.model(
-#             email=self.mormalize_email(email)
-#         )
-#
-#         user.set_password(password)
-#         user.save()
-#
-#         return user
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, phone, password=None):
 
@@ -68,15 +57,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=20)
-    first_name = models.CharField(max_length=40, blank=True)
-    last_name = models.CharField(max_length=40, blank=True)
+    password = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
     phone = models.TextField(max_length=13, blank=True)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -86,7 +74,8 @@ class User(AbstractBaseUser):
         # The user is identified by their email address
         return self.email
 
-    def __str__(self):              # __unicode__ on Python 2
+    def __str__(self):
+        # __unicode__ on Python 2
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -106,16 +95,3 @@ class Address(models.Model):
     line1 = models.CharField(max_length=50)
     postcode = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    # objects = UserManager()
-    #
-    # REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'phone']
-    #
-    # def __unicode__(self):
-    #     return self.email
-    #
-    # def get_full_name(self):
-    #     return ' '.join([self.first_name, self.last_name])
-    #
-    # def get_short_name(self):
-    #     return self.first_name
