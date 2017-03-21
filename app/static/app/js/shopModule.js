@@ -3,9 +3,7 @@
  */
 (function (angular) {
     'use strict';
-    angular.module('app.shop', [
-        'app.data'
-    ])
+    angular.module('shop', [])
         .controller('shopController', ['shopService', '$scope', function (shop, $scope) {
             $scope.items = null;
 

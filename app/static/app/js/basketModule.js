@@ -3,8 +3,7 @@
  */
 (function (angular) {
     'use strict';
-    angular.module('app.basket', [
-        'app.data',
+    angular.module('basket', [
         'underscore'
     ])
         .controller('basketController', ['basketService', '$scope', function (basket, $scope) {

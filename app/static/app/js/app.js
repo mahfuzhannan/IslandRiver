@@ -4,7 +4,7 @@
 (function (angular) {
     'use strict';
     angular.module('app', [
-        'app.data',
-        'app.shop'
+        'shop',
+        'basket',
     ]);
 })(window.angular);
