@@ -17,12 +17,6 @@ class Item(models.Model):
     # category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE)
 
 
-class Basket(models.Model):
-    items = models.ManyToManyField(Item)
-    total = models.CharField(max_length=50)
-    # user = models.OneToOneField(user)
-
-
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, phone, password=None):
 
@@ -95,3 +89,9 @@ class Address(models.Model):
     line1 = models.CharField(max_length=50)
     postcode = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Basket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item)
+    total = models.CharField(max_length=50)

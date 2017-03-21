@@ -5,8 +5,6 @@
     'use strict';
     angular.module('app', [
         'app.data',
-        'app.shop',
-        'app.signup',
-        'app.login'
+        'app.shop'
     ]);
 })(window.angular);

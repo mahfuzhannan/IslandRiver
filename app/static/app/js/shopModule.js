@@ -10,12 +10,14 @@
             $scope.items = null;
 
             $scope.getItems = function () {
-                console.log('getting items...');
                 shop.getItems().then(function (response) {
-                    console.log(response);
                     $scope.items = response;
                 });
-            }
+            };
+
+            $scope.addItem = function (item) {
+                shop.addToBasket(item);
+            };
 
         }])
         .service('shopService', ['dataService', function (data) {
@@ -24,11 +26,11 @@
             };
 
             this.addToBasket = function (item) {
-                return data.put('/baskets/add', {item:item});
+                return data.put('/baskets/', {item:item});
             };
 
             this.removeFromBasket = function (item) {
-                return data.put('/baskets/remove', {item:item});
+                return data.delete('/baskets/', {item:item});
             };
 
             this.checkout = function () {
