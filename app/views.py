@@ -6,7 +6,7 @@ from app.models import Item, User, Address, Basket
 from .forms import SignupForm, LoginForm
 
 
-# Create your views here.
+# Static views
 
 
 def home(request):
@@ -27,57 +27,23 @@ def shop(request):
         return redirect('login')
 
 
-def users(request):
-    if request.method == 'GET':
-        all_items = User.objects.all()
-        return HttpResponse(serializers.serialize('json', all_items), content_type='application/json')
-    if request.method == 'POST':
-        # create item
-        return HttpResponse({'message': 'added user'}, content_type='application/json')
-    if request.method == 'PUT':
-        # edit item
-        return HttpResponse({'message': 'changed user'}, content_type='application/json')
-    if request.method == 'DELETE':
-        # delete item
-        return HttpResponse({'message': 'deleted user'}, content_type='application/json')
-
-
-def baskets(request):
+def basket_view(request):
     if request.user.is_authenticated:
-        if request.method == 'PUT':
-            item_id = request.POST['item']
-            item = Item.objects.get(id=item_id)
-            basket = Basket.objects.get(email=request.user.email)
-            basket.items.add(item)
-            return JsonResponse({'item': item_id})
-        if request.method == 'DELETE':
-            item_id = request.POST['item']
-            item = Item.objects.get(id=item_id)
-            basket = Basket.objects.get(email=request.user.email)
-            basket.items.remove(item)
-            return JsonResponse({'item': item_id})
-        if request.method == 'GET':
-            user = User.objects.get(email=request.user.email)
-            basket = Basket.objects.get(user=request.user)
-            context = {'logged_in':True, 'basket': basket}
-            return render(request, 'app/basket.html', context)
+        context = {'logged_in':True}
+        return render(request, 'app/basket.html', context)
     else:
         return redirect('login')
 
 
-def items(request):
-    if request.method == 'GET':
-        all_items = Item.objects.all()
-        return HttpResponse(serializers.serialize('json', all_items), content_type='application/json')
-    if request.method == 'POST':
-        # create item
-        return HttpResponse({'message': 'added item'}, content_type='application/json')
-    if request.method == 'PUT':
-        # edit item
-        return HttpResponse({'message': 'changed item'}, content_type='application/json')
-    if request.method == 'DELETE':
-        # delete item
-        return HttpResponse({'message': 'deleted item'}, content_type='application/json')
+def account_view(request):
+    if request.user.is_authenticated:
+        context = {'logged_in':True}
+        return render(request, 'app/account.html', context)
+    else:
+        return redirect('login')
+
+
+# Auth views
 
 
 def signup_user(request):
@@ -138,3 +104,59 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+
+# REST APIs
+
+
+def users(request):
+    if request.method == 'GET':
+        all_items = User.objects.all()
+        return HttpResponse(serializers.serialize('json', all_items), content_type='application/json')
+    if request.method == 'POST':
+        # create user
+        return HttpResponse({'message': 'added user'}, content_type='application/json')
+    if request.method == 'PUT':
+        # edit user
+        return HttpResponse({'message': 'changed user'}, content_type='application/json')
+    if request.method == 'DELETE':
+        # delete user
+        return HttpResponse({'message': 'deleted user'}, content_type='application/json')
+
+
+def baskets(request):
+    if request.user.is_authenticated:
+        if request.method == 'PUT':
+            item_id = request.POST['item']
+            item = Item.objects.get(id=item_id)
+            basket = Basket.objects.get(email=request.user.email)
+            basket.items.add(item)
+            return JsonResponse({'item': item_id})
+        if request.method == 'DELETE':
+            item_id = request.POST['item']
+            item = Item.objects.get(id=item_id)
+            basket = Basket.objects.get(email=request.user.email)
+            basket.items.remove(item)
+            return JsonResponse({'item': item_id})
+        if request.method == 'GET':
+            user = User.objects.get(email=request.user.email)
+            basket = Basket.objects.get(user=request.user)
+            context = {'logged_in':True, 'basket': basket}
+            return render(request, 'app/basket.html', context)
+    else:
+        return redirect('login')
+
+
+def items(request):
+    if request.method == 'GET':
+        all_items = Item.objects.all()
+        return HttpResponse(serializers.serialize('json', all_items), content_type='application/json')
+    if request.method == 'POST':
+        # create item
+        return HttpResponse({'message': 'added item'}, content_type='application/json')
+    if request.method == 'PUT':
+        # edit item
+        return HttpResponse({'message': 'changed item'}, content_type='application/json')
+    if request.method == 'DELETE':
+        # delete item
+        return HttpResponse({'message': 'deleted item'}, content_type='application/json')

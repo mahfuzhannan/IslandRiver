@@ -10,8 +10,10 @@
             $scope.items = null;
 
             $scope.getItems = function () {
-                shop.getItems().then(function (response) {
+                shop.getItems().success(function (response) {
                     $scope.items = response;
+                }).error(function () {
+                //    do something
                 });
             };
 
@@ -20,21 +22,21 @@
             };
 
         }])
-        .service('shopService', ['dataService', function (data) {
+        .service('shopService', ['$http', function ($http) {
             this.getItems = function () {
-                return data.get('/items');
+                return $http.get('/items');
             };
 
             this.addToBasket = function (item) {
-                return data.put('/baskets/', {item:item});
+                return $http.put('/baskets/', {item:item});
             };
 
             this.removeFromBasket = function (item) {
-                return data.delete('/baskets/', {item:item});
+                return $http.delete('/baskets/', {params:{item:item}});
             };
 
             this.checkout = function () {
-                return data.get('/baskets/checkout');
+                return $http.get('/baskets/checkout');
             };
         }]);
 })(window.angular);
