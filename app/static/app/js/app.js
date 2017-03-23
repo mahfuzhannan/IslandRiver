@@ -6,5 +6,11 @@
     angular.module('app', [
         'shop',
         'basket',
-    ]);
+        'ngRoute',
+        'ngNotify'
+    ])
+        .config(['$routeProvider', '$httpProvider', function (routeProvider, $httpProvider) {
+            $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+            $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        }]);
 })(window.angular);

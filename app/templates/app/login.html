@@ -1,41 +1,43 @@
 {% extends "app/main.html" %}
 {% block content %}
-<main class="page-wrap">
-    <div class="container">
-        <h1 class="alert alert-primary text-center"><a href="/">L O G I N</a></h1>
-        <div class="panel panel-small panel-default">
-            <div class="panel-body text-center">
-                <h4 class="text-center">Login for E COMMERCE</h4>
-                <form class="form" action="/login/" method="POST">
-                    {% csrf_token %}
-                    {% if error %}
-                    <div class="form-group alert alert-danger">
-                        <p>{{error}}</p>
-                    </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="email"> <i class="fa fa-user"></i></span>
-                            {{ form.email }}
+    <main class="page-wrap">
+        <div class="container">
+            <h1 class="alert alert-primary text-center"><a href="/">L O G I N</a></h1>
+            <div class="panel panel-small panel-default">
+                <div class="panel-body text-center">
+                    <h4 class="text-center">Login for E COMMERCE</h4>
+                    <form class="form" action="/login/" method="POST">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="form-group alert alert-danger">
+                                <p>{{error}}</p>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="username"> <i class="fa fa-user"></i></span>
+                                {#                            {{ form.email }}#}
+                                <input class="form-control" type="text" id="username" name="username"  placeholder="Username">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="pass"><i class="fa fa-lock"></i></span>
-                            {{ form.password }}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="password"><i class="fa fa-lock"></i></span>
+                                {#                            {{ form.password }}#}
+                                <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Login"/>
-                    </div>
-                </form>
-            </div>
-            <div class="panel-footer text-center">
-                <br/>
-                Haven't used E-commerce before? <a href="/signup">Sign Up!</a>
-                <br/><br/>
+                        <div class="form-group">
+                            <input class="btn btn-primary btn-block" name="commit" tabindex="3" type="submit" value="Login"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer text-center">
+                    <br/>
+                    Haven't used E-commerce before? <a href="/signup">Sign Up!</a>
+                    <br/><br/>
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 {% endblock %}

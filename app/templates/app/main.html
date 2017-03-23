@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>E-commerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+    <title>Island River</title>
 
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -18,31 +19,13 @@
     <!-- Fixed Top Navbar-->
     <link rel="stylesheet" type="text/css" href="{%  static 'app/css/style.css' %}">
 
-    <!-- Angular -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-    <!-- Angular ngRoute -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"> </script>
-    <!-- Angular ngAnimate -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"> </script>
-    <!-- UI Router -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
-
-    <!-- lodash -->
-    <script src="{% static 'app/js/lodash/lodash.min.js' %}"></script>
-
-    <!-- Angular Scripts -->
-    <script src="{% static 'app/js/app.js' %}"></script>
-    <script src="{% static 'app/js/shopModule.js' %}"></script>
-    <script src="{% static 'app/js/basketModule.js' %}"></script>
-    <script src="{% static 'app/js/underscore.js' %}"></script>
-
 </head>
 <body ng-app="app">
 
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand text-center" href="/">E-COMMERCE APP</a>
+            <a class="navbar-brand text-center" href="/">Island River</a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
@@ -54,17 +37,24 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="/about">About</a></li>
-                <li><a href="/shop">Shop</a></li>
+                <li><a href="/shop/men/">Men</a></li>
+                <li><a href="/shop/women/">Women</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if logged_in %}
-                    <li ><a href="/account">My Account</a></li>
-                    <li ><a href="/logout">Log out</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle"></i><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ><a href="/account">My Account</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li ><a href="/logout">Log out</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li ><a href="/signup">Sign Up</a></li>
                     <li ><a href="/login">Login</a></li>
                 {% endif %}
-                <li><a href="/baskets">Basket</a></li>
+                <li><a href="/basket"><i class="fa fa-shopping-bag"></i></a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -74,6 +64,30 @@
     {% block content %}
     {% endblock %}
 </div>
+
+<!-- Angular -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<!-- Angular ngRoute -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"> </script>
+<!-- Angular ngAnimate -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"> </script>
+<!-- UI Router -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+<!-- NgCookies -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/ng-notify/0.8.0/ng-notify.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-notify/0.8.0/ng-notify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-notify/0.8.0/ng-notify.min.js.map"></script>
+
+<!-- lodash -->
+<script src="{% static 'app/js/lodash/lodash.min.js' %}"></script>
+
+<!-- Angular Scripts -->
+<script src="{% static 'app/js/app.js' %}"></script>
+<script src="{% static 'app/js/shopModule.js' %}"></script>
+<script src="{% static 'app/js/basketModule.js' %}"></script>
+<script src="{% static 'app/js/underscore.js' %}"></script>
 
 </body>
 </html>
