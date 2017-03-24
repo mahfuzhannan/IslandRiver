@@ -6,7 +6,7 @@
     angular.module('basket', [
         'underscore'
     ])
-        .controller('basketController', ['basketService', '$scope', 'ngNotify', '_', function (basket, $scope, ngNotify, _) {
+        .controller('basketController', ['basketService', '$scope', 'ngNotify', '_', '$window', function (basket, $scope, ngNotify, _, $window) {
             $scope.basket = null;
             $scope.basketProducts = [];
             $scope.loading = true;
@@ -55,11 +55,12 @@
                     $scope.getBasketProducts();
                 });
             };
-            
+
             $scope.checkout = function () {
                 basket.checkout().success(function (response) {
-                    ngNotify.set(response.message, {type: 'success', duration: 4000});
-                    $scope.getBasketProducts();
+                    ngNotify.set(response.message, {type: 'success', duration: 4000}, function () {
+                        $window.location.href = response.next;
+                    });
                 }).error(function (response) {
                     ngNotify.set(response.error, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
