@@ -6,6 +6,7 @@
     angular.module('app', [
         'shop',
         'basket',
+        'user',
         'ngRoute',
         'ngNotify'
     ])

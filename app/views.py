@@ -67,8 +67,14 @@ def basket_view(request):
 ##############################################################
 def account_view(request):
     if request.user.is_authenticated:
-        context = {'logged_in': True}
-        return render(request, 'app/account.html', context)
+        if request.method == 'GET':
+            context = {'logged_in': True}
+            return render(request, 'app/account.html', context)
+        elif request.method == 'DELETE':
+            user = User.objects.get(id=request.user.id)
+            logout(request)
+            user.delete()
+            return JsonResponse({'message': 'User has been delete', 'next': '/signup/'})
     else:
         return redirect('login')
 

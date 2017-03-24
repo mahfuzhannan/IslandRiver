@@ -1,6 +1,10 @@
 {% extends "app/main.html" %}
 {% block content %}
     <div class="header bg-primary text-center">
-        <h1 class="text-white">ACCOUNT</h1>
+        <h1 class="text-white" style="padding-top: 120px;">A C C O U N T</h1>
+    </div>
+    <div class="container text-center" ng-controller="userController as user">
+        <h4>Would you like to delete your account?</h4>
+        <button class="btn btn-primary" ng-click="removeUser()">Delete Account</button>
     </div>
 {% endblock %}

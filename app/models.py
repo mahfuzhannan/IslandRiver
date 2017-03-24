@@ -71,11 +71,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
-        print perm
         return True
 
     def has_module_perms(self, app_label):
-        print app_label
         return self.is_admin
 
     @property
