@@ -2,10 +2,10 @@
 {% block content %}
     <main class="page-wrap">
         <div class="container">
-            <h1 class="alert alert-primary text-center"><a href="/">L O G I N</a></h1>
+            <h1 class="alert alert-primary text-center"><a href="/">LOGIN</a></h1>
             <div class="panel panel-small panel-default">
                 <div class="panel-body text-center">
-                    <h4 class="text-center">Login for E COMMERCE</h4>
+                    <h4 class="text-center">Login for Island River</h4>
                     <form class="form" action="/login/" method="POST">
                         {% csrf_token %}
                         {% if error %}
@@ -15,16 +15,14 @@
                         {% endif %}
                         <div class="form-group">
                             <div class="input-group">
-                                <span class="input-group-addon" id="username"> <i class="fa fa-user"></i></span>
-                                {#                            {{ form.email }}#}
-                                <input class="form-control" type="text" id="username" name="username"  placeholder="Username">
+                                <span class="input-group-addon" id="email"> <i class="fa fa-user"></i></span>
+                                {{ form.email }}
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <span class="input-group-addon" id="password"><i class="fa fa-lock"></i></span>
-                                {#                            {{ form.password }}#}
-                                <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+                                <span class="input-group-addon" id="pass"><i class="fa fa-lock"></i></span>
+                                {{ form.password }}
                             </div>
                         </div>
                         <div class="form-group">

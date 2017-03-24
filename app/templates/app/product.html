@@ -1,0 +1,62 @@
+{% extends "app/main.html" %}
+{% load static %}
+{% block content %}
+    <div ng-controller="shopController as shop">
+{#        <div class="header bg-primary text-center">#}
+{#            <h1 class="text-white">{{ product.name }}</h1>#}
+{#            <p class="text-white lead">#}
+{#                {{ product.description }}#}
+{#            </p>#}
+{#        </div>#}
+
+        <div class="bg-default">
+            <div class="container header-content">
+                <div class="col-sm-6">
+                    <img src="/{{ product.photo }}" class="center-block img-responsive img-rounded" style="max-width: 450px; width: 100%;"/>
+                </div>
+                <div class="col-sm-6">
+                    <table id="product-table" class="table" style="height: 100%">
+                        <tr>
+                            <td>
+                                <h1>{{ product.name }}</h1>
+                                <h3><i>{{ product.description }}</i></h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h1>£{{ product.price }}</h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h4><i>{{ product.category.description }}</i></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn-group btn-block">
+                                    <button class="btn btn-lg btn-primary btn-block" ng-click="addProduct({{ product.id }})">Add To Basket</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+{#                    <div class="col-sm-12">#}
+{#                        <h1>{{ product.name }}</h1>#}
+{#                        <h3><i>{{ product.description }}</i></h3>#}
+{#                    </div>#}
+{#                    <div class="col-sm-12">#}
+{#                        <h1>£{{ product.price }}</h1>#}
+{#                    </div>#}
+{#                    <div class="col-sm-12">#}
+{#                        <i>{{ product.category.description }}</i>#}
+{#                    </div>#}
+{#                    <div class="col-sm-12">#}
+{#                        <div class="btn-group btn-block">#}
+{#                            <button class="btn btn-lg btn-primary btn-block" ng-click="addProduct({{ product.id }})">Add To Basket</button>#}
+{#                        </div>#}
+{#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

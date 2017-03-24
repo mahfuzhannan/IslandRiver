@@ -208,3 +208,20 @@ class BasketProduct(models.Model):
     def __unicode__(self):
         return u'%s: %s - %s' % (self.basket, self.product, self.quantity)
 
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now())
+
+    def __unicode__(self):
+        return u':%s' % (self.id)
+
+
+class OrderProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=6, decimal_places=0)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return u'%s: %s %s (%s)' % (self.id, self.product, self.quantity, self.order)
+

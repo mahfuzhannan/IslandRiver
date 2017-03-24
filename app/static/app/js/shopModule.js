@@ -7,6 +7,7 @@
         .controller('shopController', ['shopService', '$scope', 'ngNotify', '$window', function (shop, $scope, ngNotify, $window) {
             $scope.products = null;
             $scope.catalogSlug = '';
+            $scope.catalogs = null;
             $scope.categories = [];
             $scope.categorySlug = '';
             $scope.price = '';
@@ -17,18 +18,17 @@
                 console.log(pathArr);
                 if(pathArr[2] == 'men') {
                     $scope.catalogSlug = 'men';
-                } else {
+                } else if(pathArr[2] == 'women'){
                     $scope.catalogSlug = 'women';
+                } else {
+                    shop.getCatalogs().success(function (response) {
+                        $scope.catalogs = response;
+                    }).error(function () {
+                        ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    })
                 }
                 $scope.loading = true;
                 getCategories();
-                getProducts();
-            };
-
-            $scope.loadWomen = function () {
-                $scope.loading = true;
-                getCatalogs();
-                $scope.catalogSlug = 'women';
                 getProducts();
             };
 
@@ -38,17 +38,16 @@
                     $scope.products = response;
                     $scope.loading = false;
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 2000});
+                    ngNotify.set(response.error, {type: 'error', duration: 4000});
                     $scope.loading = false;
                 });
             }
 
             function getCategories() {
                 shop.getCategories($scope.catalogSlug).success(function (response) {
-                    console.log(response);
                     $scope.categories = response;
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 2000});
+                    ngNotify.set(response.error, {type: 'error', duration: 4000});
                 });
             }
 
@@ -57,20 +56,22 @@
                 getProducts();
             };
 
-            $scope.addItem = function (productId) {
-                shop.addToBasket(productId).success(function (response) {
-                    ngNotify.set(response.message, {type: 'success', duration: 2000});
+            $scope.addProduct = function (productId, quantity) {
+                shop.addToBasket(productId, quantity).success(function (response) {
+                    ngNotify.set(response.message, {type: 'success', duration: 4000});
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 2000});
+                    ngNotify.set(response.error, {type: 'error', duration: 4000});
                 });
             };
 
             $scope.getFilter = function () {
-                var str = 'All';
-                if($scope.catalogSlug && $scope.categorySlug) {
+                var str = 'all products';
+                if($scope.catalogs) {
+                    str = $scope.categorySlug;
+                } else if($scope.catalogSlug && $scope.categorySlug) {
                     str = $scope.catalogSlug + ' > ' + $scope.categorySlug;
                 } else if($scope.catalogSlug) {
-                    str = $scope.catalogSlug + ' > All';
+                    str = $scope.catalogSlug + ' > all products';
                 }
                 return str;
             };
@@ -94,8 +95,8 @@
                 return $http.get('/api/categories/?format=json&catalog__slug=' + catalogSlug);
             };
 
-            this.addToBasket = function (productId) {
-                return $http.put('/baskets/', {add:{product_id:productId}});
+            this.addToBasket = function (productId, quantity) {
+                return $http.put('/baskets/', {add:{product_id:productId, quantity:quantity||1}});
             };
         }]);
 })(window.angular);
