@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import User, Catalog, Product, CatalogCategory, Basket, BasketProduct, Order, OrderProduct
+from app.models import User, Catalog, Product, CatalogCategory, Basket, BasketProduct, Order, OrderProduct
 
 
 # class ItemSerializer(serializers.HyperlinkedModelSerializer):
