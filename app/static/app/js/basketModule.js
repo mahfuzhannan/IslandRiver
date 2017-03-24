@@ -58,10 +58,10 @@
             
             $scope.checkout = function () {
                 basket.checkout().success(function (response) {
-                    ngNotify.set(response.message, {type: 'success', duration: 10000});
+                    ngNotify.set(response.message, {type: 'success', duration: 4000});
                     $scope.getBasketProducts();
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 10000});
+                    ngNotify.set(response.error, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
                 });
             };

@@ -268,8 +268,8 @@ def checkout(request):
             OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
             basket_product.delete()
         message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
-                  request.user.email + '.'
-        return JsonResponse({'message': message, 'order_id': order.id})
+                  request.user.email + '.\nPlease wait while we redirect you to your order summary...'
+        return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
     except:
         return HttpResponseServerError({'error': 'Checkout failed'}, {'content_type': 'application/json'})
 
