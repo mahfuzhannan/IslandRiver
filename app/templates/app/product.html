@@ -2,13 +2,13 @@
 {% load static %}
 {% block content %}
     <div ng-controller="shopController as shop">
-{#        <div class="header bg-primary text-center">#}
-{#            <h1 class="text-white">{{ product.name }}</h1>#}
-{#            <p class="text-white lead">#}
-{#                {{ product.description }}#}
-{#            </p>#}
-{#        </div>#}
-
+        <div class="breadcrumbs">
+            <h5> <a href="../../">{{ product.category.catalog.slug }}</a> &gt; {{ product.category.slug }} &gt; {{ product.slug }}</h5>
+        </div>
+        <div class="header bg-primary text-center">
+            <h1 class="text-white">PRODUCT ID: {{ product.id }}</h1>
+            <h2>{{ product.name }}</h2>
+        </div>
         <div class="bg-default">
             <div class="container header-content">
                 <div class="col-sm-6">

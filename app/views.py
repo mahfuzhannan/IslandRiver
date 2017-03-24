@@ -177,7 +177,7 @@ def baskets(request):
                     basket_product = BasketProduct.objects.get(id=basket_product_id)
                     basket_product.quantity += 1
                     basket_product.save()
-                    message = basket_product.quantity + ' ' + product_name + '\'s are in your basket.'
+                    message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
                 except BasketProduct.DoesNotExist:
                     error = 'Something went wrong adding ' + product_name + '.'
             # adding from shop
@@ -191,7 +191,7 @@ def baskets(request):
                             basket_product = BasketProduct.objects.get(basket=basket, product=product)
                             basket_product.quantity += 1
                             basket_product.save()
-                            message = 'Another ' + product.name + ' has been added to your basket.'
+                            message = str(basket_product.quantity) + ' ' + product.name + '\'s are in your basket.'
                         except BasketProduct.DoesNotExist:
                             BasketProduct.objects.create(basket=basket, product=product)
                             message = product.name + ' has been added to your basket.'
@@ -212,7 +212,10 @@ def baskets(request):
                     basket_product.delete()
                     message = product_name + ' has been completely removed from your basket.'
                 else:
-                    message = product_name + ' has been removed from your basket.'
+                    if basket_product.quantity > 1:
+                        message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
+                    else:
+                        message = str(basket_product.quantity) + ' ' + product_name + ' is in your basket.'
             except BasketProduct.DoesNotExist:
                 error = 'User does not have a basket.'
     elif request.method == 'DELETE':
@@ -221,7 +224,7 @@ def baskets(request):
         try:
             basket_product = BasketProduct.objects.get(id=basket_product_id)
             basket_product.delete()
-            message = product_name + ' has been removed from your basket.'
+            message = product_name + ' has been completely removed from your basket.'
         except BasketProduct.DoesNotExist:
             error = 'Product could not be removed from your basket.'
     if error:

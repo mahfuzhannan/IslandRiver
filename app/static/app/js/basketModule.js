@@ -22,6 +22,8 @@
             };
 
             $scope.addProduct = function (basketProductId, productName) {
+                console.log('thrthtr', basketProductId);
+                console.log('sdfsdfsd', productName);
                 $scope.loading = true;
                 basket.addProduct(basketProductId, productName).success(function (response) {
                     ngNotify.set(response.message, {type: 'success', duration: 4000});

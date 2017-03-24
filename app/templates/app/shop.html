@@ -1,20 +1,16 @@
 {% extends "app/main.html" %}
 {% block content %}
     {% verbatim %}
-    <div ng-controller="shopController as shop" ng-init="init()" class="ng-cloak">
+<div ng-controller="shopController as shop" ng-init="init()" class="ng-cloak">
+        <div class="breadcrumbs">
+            <h5> {{ getFilter() }}</h5>
+        </div>
         <div class="header bg-primary text-center">
             <h1 class="text-white">S H O P</h1>
-            <p class="text-white lead">
-                Come, let us take your money.
-            </p>
+            <h2> {{ categorySlug || 'all ' + catalogSlug }}</h2>
         </div>
         <base href="/shop/" />
         <!-- Items -->
-        <div>
-            <div class="sub-header text-center">
-                <h3> {{ getFilter() }}</h3>
-            </div>
-        </div>
         <div class="col-sm-4 col-md-3 col-lg-3">
             <div class="sidebar">
                 <!-- Showing Category panel -->
@@ -63,6 +59,5 @@
             <div class="loader">Loading...</div>
         </div>
     </div>
-
-    {% endverbatim %}
+{% endverbatim %}
 {% endblock %}
