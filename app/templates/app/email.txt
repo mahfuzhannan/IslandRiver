@@ -1,0 +1,5 @@
+Hello {{ first_name }} {{ last_name }}
+Thank you for your order, it has been placed
+Your order details are below
+
+T&C's apply

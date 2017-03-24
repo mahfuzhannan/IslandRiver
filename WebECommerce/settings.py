@@ -130,3 +130,10 @@ LOGIN_REDIRECT_URL = '/shop/men/'
 REST_FRAMEWORK = {
     # 'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
+
+# EMAIL SETTINGS
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST_USER = 'island_web_river@outlook.com'
+EMAIL_HOST_PASSWORD = 'island123'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True

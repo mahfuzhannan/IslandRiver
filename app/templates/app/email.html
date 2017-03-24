@@ -1,0 +1,35 @@
+<html>
+    <head></head>
+    <body>
+        <p> Dear {{ first_name }} {{last_name}}, </p>
+        <br/>
+        <p>Your order {{ order.id }} has been successfully made.</p>
+        <p>You can view your order below:</p>
+            <table>
+                <tr>
+                    <td>
+                        <strong>Product Name</strong>
+                    </td>
+                    <td>
+                        <strong>Price</strong>
+                    </td>
+                </tr>
+                {% for order_product in order_products %}
+                <tr>
+                    <td>
+                        {{ order_product.product.name }}
+                    </td>
+                    <td>
+                        {{ order_product.product.price }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+         </br>
+          <a href="http://islandriver3-mahfuzhannan.apps.devcloud.eecs.qmul.ac.uk/orders/summary/">Click to see full summary</a>
+
+        <p>Many thanks, </p>
+        </br>
+        <p>Island River Team</p>
+    </body>
+</html>

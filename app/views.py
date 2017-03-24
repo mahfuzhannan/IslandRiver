@@ -1,11 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
+from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse, HttpResponseServerError
 from django.db import transaction
 from rest_framework import viewsets, generics
 from rest_framework import filters
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string, get_template
+from django.template import loader
+from django.template import Context
 import simplejson
 
 from app.serializers import UserSerializer, CatalogSerializer, ProductSerializer, CatalogCategorySerializer, \
@@ -13,6 +20,8 @@ from app.serializers import UserSerializer, CatalogSerializer, ProductSerializer
 from app.models import User, Address, Basket, BasketProduct, Catalog, Product, CatalogCategory, Order, OrderProduct
 from app.permissions import RestApiPermissions
 from app.forms import SignupForm, LoginForm
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 ##############################################################
@@ -67,14 +76,8 @@ def basket_view(request):
 ##############################################################
 def account_view(request):
     if request.user.is_authenticated:
-        if request.method == 'GET':
-            context = {'logged_in': True}
-            return render(request, 'app/account.html', context)
-        elif request.method == 'DELETE':
-            user = User.objects.get(id=request.user.id)
-            logout(request)
-            user.delete()
-            return JsonResponse({'message': 'User has been delete', 'next': '/signup/'})
+        context = {'logged_in': True}
+        return render(request, 'app/account.html', context)
     else:
         return redirect('login')
 
@@ -183,7 +186,7 @@ def baskets(request):
                     basket_product = BasketProduct.objects.get(id=basket_product_id)
                     basket_product.quantity += 1
                     basket_product.save()
-                    message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
+                    message = basket_product.quantity + ' ' + product_name + '\'s are in your basket.'
                 except BasketProduct.DoesNotExist:
                     error = 'Something went wrong adding ' + product_name + '.'
             # adding from shop
@@ -197,7 +200,7 @@ def baskets(request):
                             basket_product = BasketProduct.objects.get(basket=basket, product=product)
                             basket_product.quantity += 1
                             basket_product.save()
-                            message = str(basket_product.quantity) + ' ' + product.name + '\'s are in your basket.'
+                            message = 'Another ' + product.name + ' has been added to your basket.'
                         except BasketProduct.DoesNotExist:
                             BasketProduct.objects.create(basket=basket, product=product)
                             message = product.name + ' has been added to your basket.'
@@ -218,10 +221,7 @@ def baskets(request):
                     basket_product.delete()
                     message = product_name + ' has been completely removed from your basket.'
                 else:
-                    if basket_product.quantity > 1:
-                        message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
-                    else:
-                        message = str(basket_product.quantity) + ' ' + product_name + ' is in your basket.'
+                    message = product_name + ' has been removed from your basket.'
             except BasketProduct.DoesNotExist:
                 error = 'User does not have a basket.'
     elif request.method == 'DELETE':
@@ -230,7 +230,7 @@ def baskets(request):
         try:
             basket_product = BasketProduct.objects.get(id=basket_product_id)
             basket_product.delete()
-            message = product_name + ' has been completely removed from your basket.'
+            message = product_name + ' has been removed from your basket.'
         except BasketProduct.DoesNotExist:
             error = 'Product could not be removed from your basket.'
     if error:
@@ -270,13 +270,28 @@ def checkout(request):
         order = Order.objects.create(user=request.user)
         basket = Basket.objects.get(user=request.user)
         basket_products = BasketProduct.objects.filter(basket=basket)
+        order_products = []
         for basket_product in basket_products:
-            OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_product = OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_products.append(order_product)
             basket_product.delete()
-        message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
-                  request.user.email + '.'
+            message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
+                      request.user.email + '.'
+
+        plaintext = get_template('app/email.txt')
+        htmly = get_template('app/email.html')
+
+        d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
+
+        subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
         return JsonResponse({'message': message, 'order_id': order.id})
-    except:
+
+    except Order.DoesNotExist:
         return HttpResponseServerError({'error': 'Checkout failed'}, {'content_type': 'application/json'})
 
 
