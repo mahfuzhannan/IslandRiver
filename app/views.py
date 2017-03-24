@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseServerError
 from django.db import transaction
 from rest_framework import viewsets, generics
 from rest_framework import filters
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 import simplejson
 
 from app.serializers import UserSerializer, CatalogSerializer, ProductSerializer, CatalogCategorySerializer, \
@@ -270,13 +270,28 @@ def checkout(request):
         order = Order.objects.create(user=request.user)
         basket = Basket.objects.get(user=request.user)
         basket_products = BasketProduct.objects.filter(basket=basket)
+        order_products = []
         for basket_product in basket_products:
-            OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_product = OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_products.append(order_product)
             basket_product.delete()
-        message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
+            message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
                   request.user.email + '.'
+        plaintext = get_template('app/email.txt')
+        htmly = get_template('app/email.html')
+
+        d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
+
+        subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+        message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
+               request.user.email + '.'
         return JsonResponse({'message': message, 'order_id': order.id})
-    except:
+    except Order.DoesNotExist:    except:
         return HttpResponseServerError({'error': 'Checkout failed'}, {'content_type': 'application/json'})
 
 
