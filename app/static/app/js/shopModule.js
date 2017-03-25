@@ -22,8 +22,8 @@
                 } else {
                     shop.getCatalogs().success(function (response) {
                         $scope.catalogs = response;
-                    }).error(function () {
-                        ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    }).error(function (response) {
+                        ngNotify.set(response, {type: 'error', duration: 4000});
                     })
                 }
                 $scope.loading = true;
@@ -37,7 +37,7 @@
                     $scope.products = response;
                     $scope.loading = false;
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                     $scope.loading = false;
                 });
             }
@@ -46,7 +46,7 @@
                 shop.getCategories($scope.catalogSlug).success(function (response) {
                     $scope.categories = response;
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                 });
             }
 
@@ -59,7 +59,7 @@
                 shop.addToBasket(productId, quantity).success(function (response) {
                     ngNotify.set(response.message, {type: 'success', duration: 4000});
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                 });
             };
 

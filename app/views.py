@@ -195,7 +195,8 @@ def baskets(request):
                     basket_product.quantity += 1
                     basket_product.save()
                     message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
-                except BasketProduct.DoesNotExist:
+                except BasketProduct.DoesNotExist, e:
+                    print(str(e))
                     error = 'Something went wrong adding ' + product_name + '.'
             # adding from shop
             elif 'product_id' in dict:
@@ -209,12 +210,15 @@ def baskets(request):
                             basket_product.quantity += 1
                             basket_product.save()
                             message = str(basket_product.quantity) + ' ' + product.name + '\'s are in your basket.'
-                        except BasketProduct.DoesNotExist:
+                        except BasketProduct.DoesNotExist, e:
+                            print(str(e))
                             BasketProduct.objects.create(basket=basket, product=product)
                             message = product.name + ' has been added to your basket.'
-                    except Product.DoesNotExist:
+                    except Product.DoesNotExist, e:
+                        print(str(e))
                         error = 'Product does not exist.'
-                except Basket.DoesNotExist:
+                except Basket.DoesNotExist, e:
+                    print(str(e))
                     error = 'User does not have a basket.'
             else:
                 error = 'Something went wrong.'
@@ -233,7 +237,8 @@ def baskets(request):
                         message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
                     else:
                         message = str(basket_product.quantity) + ' ' + product_name + ' is in your basket.'
-            except BasketProduct.DoesNotExist:
+            except BasketProduct.DoesNotExist, e:
+                print(str(e))
                 error = 'User does not have a basket.'
     elif request.method == 'DELETE':
         basket_product_id = request.GET.get('basket_product_id')
@@ -242,10 +247,11 @@ def baskets(request):
             basket_product = BasketProduct.objects.get(id=basket_product_id)
             basket_product.delete()
             message = product_name + ' has been completely removed from your basket.'
-        except BasketProduct.DoesNotExist:
+        except BasketProduct.DoesNotExist, e:
+            print(str(e))
             error = 'Product could not be removed from your basket.'
     if error:
-        return HttpResponseServerError({'error': error}, {'content_type': 'application/json'})
+        return HttpResponseServerError(error)
     else:
         return JsonResponse({'message': message})
 
@@ -266,8 +272,9 @@ def order_summary_view(request):
                 order.total += order_product.price
             context = {'logged_in': True, 'order': order, 'order_products': list(order_products)}
             return render(request, 'app/order.html', context)
-        except Order.DoesNotExist:
-            return HttpResponseServerError({'error': 'Failed to get order'}, {'content_type': 'application/json'})
+        except Order.DoesNotExist, e:
+            print(str(e))
+            return HttpResponseServerError('Order does not exist')
     else:
         return redirect('login')
 
@@ -277,6 +284,8 @@ def order_summary_view(request):
 ##############################################################
 @transaction.atomic
 def checkout(request):
+    error = None
+    message = None
     try:
         # Create order
         order = Order.objects.create(user=request.user)
@@ -290,20 +299,28 @@ def checkout(request):
 
         message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
                   request.user.email + '.\nPlease wait while we redirect you to your order summary.'
-
-        # send email
-        plaintext = get_template('app/email.txt')
-        htmly = get_template('app/email.html')
-        d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
-        subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
-        text_content = plaintext.render(d)
-        html_content = htmly.render(d)
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
+        try:
+            # send email
+            plaintext = get_template('app/email.txt')
+            htmly = get_template('app/email.html')
+            d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
+            subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
+            text_content = plaintext.render(d)
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
+        except Exception, e:
+            print(str(e))
+            message = 'Your order ' + str(order.id) + ' has been confirmed, however email could not be sent. ' \
+                                                    '\nPlease wait while we redirect you to your order summary.'
         return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
-    except:
-        return HttpResponseServerError({'error': 'Checkout failed'}, {'content_type': 'application/json'})
+    except Exception, e:
+        print(str(e))
+        error = 'Failed to create order. Redirecting to home.'
+    if error:
+        return HttpResponseServerError(error)
 
 
 ##############################################################

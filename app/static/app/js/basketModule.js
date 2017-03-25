@@ -18,7 +18,7 @@
                     $scope.basketProducts = response;
                     $scope.loading = false;
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                     $scope.loading = false;
                 });
             };
@@ -29,7 +29,7 @@
                     ngNotify.set(response.message, {type: 'success', duration: 4000});
                     $scope.getBasketProducts();
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
                 });
             };
@@ -40,7 +40,7 @@
                     ngNotify.set(response.message, {type: 'success', duration: 4000});
                     $scope.getBasketProducts();
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
                 });
             };
@@ -51,7 +51,7 @@
                     ngNotify.set(response.message, {type: 'success', duration: 4000});
                     $scope.getBasketProducts();
                 }).error(function (response) {
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
                 });
             };
@@ -67,7 +67,10 @@
                 }).error(function (response) {
                     $scope.checkoutLoading = false;
                     $scope.checkoutDone = true;
-                    ngNotify.set(response.error, {type: 'error', duration: 4000});
+                    ngNotify.set(response, {type: 'error', duration: 4000});
+                    if(response.next) {
+                        $window.location.href = response.next;
+                    }
                     $scope.getBasketProducts();
                 });
             };

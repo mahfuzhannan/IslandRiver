@@ -14,7 +14,7 @@
                                  $window.location.href = response.next;
                              });
                          }).error(function (response) {
-                             ngNotify.set(response.error, {type: 'error', duration: 4000}, function () {
+                             ngNotify.set(response, {type: 'error', duration: 4000}, function () {
                                  // redirect to login
                                  $window.location.href = response.next;
                              });
