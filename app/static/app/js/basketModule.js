@@ -10,6 +10,8 @@
             $scope.basket = null;
             $scope.basketProducts = [];
             $scope.loading = true;
+            $scope.checkoutLoading = false;
+            $scope.checkoutDone = false;
 
             $scope.getBasketProducts = function () {
                 basket.getBasketProducts().success(function (response) {
@@ -22,8 +24,6 @@
             };
 
             $scope.addProduct = function (basketProductId, productName) {
-                console.log('thrthtr', basketProductId);
-                console.log('sdfsdfsd', productName);
                 $scope.loading = true;
                 basket.addProduct(basketProductId, productName).success(function (response) {
                     ngNotify.set(response.message, {type: 'success', duration: 4000});
@@ -57,11 +57,16 @@
             };
 
             $scope.checkout = function () {
+                $scope.checkoutLoading = true;
                 basket.checkout().success(function (response) {
+                    $scope.checkoutLoading = false;
+                    $scope.checkoutDone = true;
                     ngNotify.set(response.message, {type: 'success', duration: 4000}, function () {
                         $window.location.href = response.next;
                     });
                 }).error(function (response) {
+                    $scope.checkoutLoading = false;
+                    $scope.checkoutDone = true;
                     ngNotify.set(response.error, {type: 'error', duration: 4000});
                     $scope.getBasketProducts();
                 });

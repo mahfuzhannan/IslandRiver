@@ -1,10 +1,57 @@
 {% extends "app/main.html" %}
 {% block content %}
+<div ng-controller="userController as user" ng-init="init()" class="ng-cloak">
     <div class="header bg-primary text-center">
-        <h1 class="text-white" style="padding-top: 120px;">A C C O U N T</h1>
+        <h1 class="text-white">ACCOUNT</h1>
+        <h2>{{ email }}</h2>
     </div>
-    <div class="container text-center" ng-controller="userController as user">
-        <h4>Would you like to delete your account?</h4>
-        <button class="btn btn-primary" ng-click="removeUser()">Delete Account</button>
+
+    <div class="header bg-info">
+        <div class="sub text-center">
+            <h2 class="text-center">MY ORDERS</h2>
+        </div>
+        <div class="container">
+            <p class="lead text-center">
+                View your latest orders.
+            </p>
+            <a href="/orders/summary/">
+                <input type="submit" class="btn btn-danger btn-lg btn-block" value="Show my order"/>
+            </a>
+        </div>
     </div>
+
+    <div class="header bg-warning">
+        <div class="sub text-center">
+            <h2 class="text-center">CHANGE PASSWORD</h2>
+        </div>
+        <div class="container">
+            <p class="lead text-center">
+                Click below to change your password.
+            </p>
+            <a href="/change-password/">
+                <input type="submit" class="btn btn-danger btn-lg btn-block" value="Change Password"/>
+            </a>
+        </div>
+    </div>
+
+    <div class="header bg-danger">
+        <div class="sub text-center">
+            <h2 class="text-center">DELETE YOUR ACCOUNT</h2>
+        </div>
+        <div class="container">
+            <p class="lead text-center">
+                To delete you account, enter your email below.
+            </p>
+            <form class="form">
+                <div class="form-group col-xs-12">
+                    <label for="delete_username">Username</label>
+                    <input class="form-control" type="text" ng-model="email">
+                </div>
+                <div class="form-group col-xs-12">
+                    <button class="btn btn-primary btn-lg btn-block" ng-click="removeUser('{{ email }}')">Delete Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

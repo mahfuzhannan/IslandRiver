@@ -1,11 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.http import HttpResponse, JsonResponse, HttpResponseServerError
+from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseNotFound
 from django.db import transaction
 from rest_framework import viewsets, generics
 from rest_framework import filters
-from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string, get_template
+from django.template import loader
+from django.template import Context
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import simplejson
 
 from app.serializers import UserSerializer, CatalogSerializer, ProductSerializer, CatalogCategorySerializer, \
@@ -68,13 +77,13 @@ def basket_view(request):
 def account_view(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            context = {'logged_in': True}
+            context = {'logged_in': True, 'email': request.user.email}
             return render(request, 'app/account.html', context)
         elif request.method == 'DELETE':
             user = User.objects.get(id=request.user.id)
             logout(request)
             user.delete()
-            return JsonResponse({'message': 'User has been delete', 'next': '/signup/'})
+            return JsonResponse({'message': 'User has been deleted, redirecting...', 'next': '/signup/'})
     else:
         return redirect('login')
 
@@ -105,10 +114,12 @@ def signup_user(request):
                         house = form.cleaned_data['house']
                         line1 = form.cleaned_data['line1']
                         postcode = form.cleaned_data['postcode']
-                        # create associated address
-                        Address.objects.create(house=house, line1=line1, postcode=postcode, user=user)
-                        # create associated basket
-                        Basket.objects.create(user=user)
+                        # update associated address
+                        address = Address.objects.get(user=user)
+                        address.house = house
+                        address.line1 = line1
+                        address.postcode = postcode
+                        address.save()
                         # redirect to shop
                         login(request, user)
                         return redirect('/shop/men/')
@@ -246,6 +257,7 @@ def order_summary_view(request):
     if request.user.is_authenticated:
         try:
             order = Order.objects.latest('date')
+            order.address = Address.objects.get(user=request.user)
             order_products = OrderProduct.objects.filter(order=order)
             order.total = 0
             # calculate total and prices of order items
@@ -270,11 +282,25 @@ def checkout(request):
         order = Order.objects.create(user=request.user)
         basket = Basket.objects.get(user=request.user)
         basket_products = BasketProduct.objects.filter(basket=basket)
+        order_products = []
         for basket_product in basket_products:
-            OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_product = OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_products.append(order_product)
             basket_product.delete()
+
         message = 'Your order ' + str(order.id) + ' has been confirmed. An email has been sent to ' + \
-                  request.user.email + '.\nPlease wait while we redirect you to your order summary...'
+                  request.user.email + '.\nPlease wait while we redirect you to your order summary.'
+
+        # send email
+        plaintext = get_template('app/email.txt')
+        htmly = get_template('app/email.html')
+        d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
+        subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
         return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
     except:
         return HttpResponseServerError({'error': 'Checkout failed'}, {'content_type': 'application/json'})

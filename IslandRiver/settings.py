@@ -124,3 +124,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 AUTH_USER_MODEL = 'app.User'
 LOGIN_REDIRECT_URL = '/shop/men/'
+
+# EMAIL SETTINGS
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST_USER = 'island_web_river@outlook.com'
+EMAIL_HOST_PASSWORD = 'island123'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True

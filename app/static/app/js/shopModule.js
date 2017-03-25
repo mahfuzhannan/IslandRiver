@@ -15,7 +15,6 @@
 
             $scope.init = function () {
                 var pathArr = $window.location.pathname.split('/');
-                console.log(pathArr);
                 if(pathArr[2] == 'men') {
                     $scope.catalogSlug = 'men';
                 } else if(pathArr[2] == 'women'){

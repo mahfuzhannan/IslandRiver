@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import User, Catalog, Product, CatalogCategory, ProductDetail, ProductAttribute, Basket, BasketProduct, \
-    Order, OrderProduct
+from .models import User, Address, Catalog, Product, CatalogCategory, ProductDetail, ProductAttribute, \
+    Basket, BasketProduct, Order, OrderProduct
 
 # Register your models here.
 admin.site.register(User)
+admin.site.register(Address)
 admin.site.register(Catalog)
 admin.site.register(Product)
 admin.site.register(CatalogCategory)

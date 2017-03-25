@@ -23,7 +23,9 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="btn-group pull-right">
-                                        <button class="btn btn-danger btn-block" ng-click="deleteProduct(basketProduct.id, basketProduct.product.name)"><i class="fa fa-times"></i></button>
+                                        <button class="btn btn-danger btn-block"  ng-disabled="checkoutDone"
+                                                ng-click="deleteProduct(basketProduct.id, basketProduct.product.name)">
+                                            <i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -32,7 +34,10 @@
                                 <!-- Add Quantity -->
                                 <div class="col-xs-3">
                                     <div class="btn-group btn-block">
-                                        <button class="btn btn-sm btn-default pull-left" ng-click="addProduct(basketProduct.id, basketProduct.product.name)"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-sm btn-default pull-left"
+                                                ng-disabled="checkoutDone"
+                                                ng-click="addProduct(basketProduct.id, basketProduct.product.name)">
+                                            <i class="fa fa-minus"></i></button>
                                     </div>
                                 </div>
                                 <!-- Quantity Value -->
@@ -41,8 +46,11 @@
                                 </div>
                                 <!-- Remove Quantity -->
                                 <div class="col-xs-3">
-                                    <div class="btn-group btn-block">
-                                        <button class="btn btn-sm btn-default pull-right" ng-click="removeProduct(basketProduct.id, basketProduct.product.name)"><i class="fa fa-plus"></i></button>
+                                    <div class="btn-group btn-block" >
+                                        <button class="btn btn-sm btn-default pull-right"
+                                                ng-disabled="checkoutDone"
+                                                ng-click="removeProduct(basketProduct.id, basketProduct.product.name)">
+                                            <i class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +90,9 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="btn-group btn-block">
-                                <button class="btn btn-lg btn-primary btn-block" ng-click="checkout()">Checkout</button>
+                                <button class="btn btn-lg btn-primary btn-block"
+                                        ng-disabled="checkoutDone"
+                                        ng-click="checkout()">Checkout</button>
                             </div>
                         </div>
                     </div>
@@ -119,6 +129,13 @@
         </div>
     </div>
 
+    <div class="container" ng-show="checkoutLoading">
+        <div class="overlay">
+            <div class="overlay-content">
+                <div class="loader">Loading...</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Checkout -->
 

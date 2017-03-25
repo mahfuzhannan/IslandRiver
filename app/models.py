@@ -22,6 +22,8 @@ class UserManager(BaseUserManager):
         user.is_admin = False
         user.set_password(password)
         user.save(using=self._db)
+        Address.objects.create(user=user)
+        Basket.objects.create(user=user)
         return user
 
     def create_superuser(self, email, first_name, last_name, phone, password=None):
@@ -36,6 +38,8 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.is_admin = True
         user.save(using=self._db)
+        Address.objects.create(user=user)
+        Basket.objects.create(user=user)
         return user
 
 
@@ -65,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def __str__(self):
-        # __unicode__ on Python 2g
+        # __str__ on Python 2g
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -93,6 +97,11 @@ class Address(models.Model):
     postcode = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        # __str__ on Python 2g
+        return '%s, %s, %s' % (self.house, self.line1, self.postcode)
+
+
 
 # class Basket(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -106,7 +115,7 @@ class Catalog(models.Model):
     description = models.TextField()
     pub_date = models.DateTimeField(default=timezone.now())
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -119,7 +128,7 @@ class Product(models.Model):
     manufacturer = models.CharField(max_length=300, blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -130,8 +139,8 @@ class CatalogCategory(models.Model):
     slug = models.SlugField(max_length=150)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.catalog, self.name)
+    def __str__(self):
+        return '%s - %s' % (self.catalog, self.name)
 
 
 class ProductDetail(models.Model):
@@ -146,8 +155,8 @@ class ProductDetail(models.Model):
     value = models.CharField(max_length=500)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
-        return u'%s: %s - %s' % (self.product, self.attribute, self.value)
+    def __str__(self):
+        return '%s: %s - %s' % (self.product, self.attribute, self.value)
 
 
 class ProductAttribute(models.Model):
@@ -162,15 +171,15 @@ class ProductAttribute(models.Model):
     name = models.CharField(max_length=300)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
-        return u'%s' % self.name
+    def __str__(self):
+        return '%s' % self.name
 
 
 class Basket(models.Model):
     user = models.OneToOneField(User, null=True)
 
-    def __unicode__(self):
-        return u'%s' % self.user
+    def __str__(self):
+        return '%s' % self.user
 
 
 class BasketProductManager(models.Manager):
@@ -203,16 +212,16 @@ class BasketProduct(models.Model):
 
     objects = BasketProductManager()
 
-    def __unicode__(self):
-        return u'%s: %s - %s' % (self.basket, self.product, self.quantity)
+    def __str__(self):
+        return '%s: %s - %s' % (self.basket, self.product, self.quantity)
 
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now())
 
-    def __unicode__(self):
-        return u':%s' % (self.id)
+    def __str__(self):
+        return ':%s' % (self.id)
 
 
 class OrderProduct(models.Model):
@@ -220,6 +229,6 @@ class OrderProduct(models.Model):
     quantity = models.DecimalField(max_digits=6, decimal_places=0)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return u'%s: %s %s (%s)' % (self.id, self.product, self.quantity, self.order)
+    def __str__(self):
+        return '%s: %s %s (%s)' % (self.id, self.product, self.quantity, self.order)
 
