@@ -43,7 +43,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if logged_in %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle"></i><span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user }} <i class="fa fa-user-circle"></i><span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li ><a href="/account">My Account</a></li>
                             <li role="separator" class="divider"></li>
@@ -88,6 +88,7 @@
 <script src="{% static 'app/js/shopModule.js' %}"></script>
 <script src="{% static 'app/js/basketModule.js' %}"></script>
 <script src="{% static 'app/js/userModule.js' %}"></script>
+<script src="{% static 'app/js/productModule.js' %}"></script>
 <script src="{% static 'app/js/underscore.js' %}"></script>
 
 </body>

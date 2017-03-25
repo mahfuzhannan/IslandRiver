@@ -7,6 +7,7 @@
         'shop',
         'basket',
         'user',
+        'product',
         'ngRoute',
         'ngNotify'
     ])

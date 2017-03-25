@@ -12,6 +12,7 @@ rest_api_router.register(r'baskets', views.RestApiBasketViewSet)
 rest_api_router.register(r'baskets/products', views.RestApiBasketProductViewSet)
 rest_api_router.register(r'orders', views.RestApiOrderViewSet)
 rest_api_router.register(r'orders/products', views.RestApiOrderProductViewSet)
+rest_api_router.register(r'reviews', views.RestApiReviewProductViewSet)
 
 
 urlpatterns = [
@@ -34,6 +35,8 @@ urlpatterns = [
     url(r'^shop/(.*)/(.*)/$', views.shop_product, name='shop'),
     url(r'^shop/(.*)/$', views.shop, name='shop'),
     url(r'^shop/$', views.shop, name='shop'),
+    # product review
+    url(r'^products/review/$', views.product_review, name='review'),
     # account page
     url(r'^account/$', views.account_view, name='account'),
     # basket page

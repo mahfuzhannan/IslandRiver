@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models import User, Catalog, Product, CatalogCategory, Basket, BasketProduct, Order, OrderProduct
+from app.models import User, Catalog, Product, CatalogCategory, Basket, BasketProduct, Order, OrderProduct, Review
 
 
 # class ItemSerializer(serializers.HyperlinkedModelSerializer):
@@ -71,3 +71,12 @@ class OrderProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = OrderProduct
         fields = ('id', 'product', 'date', 'order')
+
+
+class ReviewSerializer(serializers.HyperlinkedModelSerializer):
+    product = ProductSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Review
+        fields = ('id', 'product', 'user', 'rating', 'comments')

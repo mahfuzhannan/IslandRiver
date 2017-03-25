@@ -1,25 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.core import serializers
-from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseServerError, HttpResponseForbidden
 from django.db import transaction
 from rest_framework import viewsets, generics
 from rest_framework import filters
-from django.conf import settings
-from django.contrib import messages
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.template.loader import render_to_string, get_template
-from django.template import loader
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 from django.template import Context
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import simplejson
 
 from app.serializers import UserSerializer, CatalogSerializer, ProductSerializer, CatalogCategorySerializer, \
-    BasketSerializer, BasketProductSerializer, OrderSerializer, OrderProductSerializer
-from app.models import User, Address, Basket, BasketProduct, Catalog, Product, CatalogCategory, Order, OrderProduct
+    BasketSerializer, BasketProductSerializer, OrderSerializer, OrderProductSerializer, ReviewSerializer
+from app.models import User, Address, Basket, BasketProduct, Catalog, Product, CatalogCategory, Order, OrderProduct, \
+    Review
 from app.permissions import RestApiPermissions
 from app.forms import SignupForm, LoginForm
 
@@ -28,7 +21,7 @@ from app.forms import SignupForm, LoginForm
 # Home Page
 ##############################################################
 def home(request):
-    context = {'logged_in': request.user.is_authenticated}
+    context = {'logged_in': request.user.is_authenticated, 'user': request.user}
     return render(request, 'app/home.html', context)
 
 
@@ -36,7 +29,7 @@ def home(request):
 # About Page
 ##############################################################
 def about(request):
-    context = {'logged_in': request.user.is_authenticated}
+    context = {'logged_in': request.user.is_authenticated, 'user': request.user}
     return render(request, 'app/about.html', context)
 
 
@@ -45,7 +38,7 @@ def about(request):
 ##############################################################
 def shop(request, *args):
     if request.user.is_authenticated:
-        context = {'logged_in': True}
+        context = {'logged_in': True, 'user': request.user}
         return render(request, 'app/shop.html', context)
     else:
         return redirect('login')
@@ -54,10 +47,29 @@ def shop(request, *args):
 def shop_product(request, catalog_slug, product_slug):
     if request.user.is_authenticated:
         product = Product.objects.get(category__catalog__slug=catalog_slug, slug=product_slug)
-        context = {'logged_in': True, 'product': product}
+        reviews = Review.objects.filter(product=product)
+        context = {'logged_in': True, 'user': request.user, 'product': product, 'reviews': reviews}
         return render(request, 'app/product.html', context)
     else:
         return redirect('login')
+
+
+def product_review(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                dict = simplejson.JSONDecoder().decode(request.body)
+                product_id = dict['product_id']
+                rating = dict['rating']
+                comments = dict['comments']
+                product = Product.objects.get(id=product_id)
+                Review.objects.create(product=product, user=request.user, rating=rating, comments=comments)
+                return JsonResponse({'message': 'Review has been submitted, updating reviews...'})
+            except Exception as e:
+                print(str(e))
+                return HttpResponseServerError('Something when wrong with submitting the review, try again later.')
+    else:
+        return HttpResponseForbidden('User not authorised')
 
 
 ##############################################################
@@ -65,7 +77,7 @@ def shop_product(request, catalog_slug, product_slug):
 ##############################################################
 def basket_view(request):
     if request.user.is_authenticated:
-        context = {'logged_in': True}
+        context = {'logged_in': True, 'user': request.user}
         return render(request, 'app/basket.html', context)
     else:
         return redirect('login')
@@ -77,7 +89,7 @@ def basket_view(request):
 def account_view(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            context = {'logged_in': True, 'email': request.user.email}
+            context = {'logged_in': True, 'user': request.user, 'email': request.user.email}
             return render(request, 'app/account.html', context)
         elif request.method == 'DELETE':
             user = User.objects.get(id=request.user.id)
@@ -195,8 +207,7 @@ def baskets(request):
                     basket_product.quantity += 1
                     basket_product.save()
                     message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
-                except BasketProduct.DoesNotExist, e:
-                    print(str(e))
+                except BasketProduct.DoesNotExist:
                     error = 'Something went wrong adding ' + product_name + '.'
             # adding from shop
             elif 'product_id' in dict:
@@ -210,15 +221,12 @@ def baskets(request):
                             basket_product.quantity += 1
                             basket_product.save()
                             message = str(basket_product.quantity) + ' ' + product.name + '\'s are in your basket.'
-                        except BasketProduct.DoesNotExist, e:
-                            print(str(e))
+                        except BasketProduct.DoesNotExist:
                             BasketProduct.objects.create(basket=basket, product=product)
                             message = product.name + ' has been added to your basket.'
-                    except Product.DoesNotExist, e:
-                        print(str(e))
+                    except Product.DoesNotExist:
                         error = 'Product does not exist.'
-                except Basket.DoesNotExist, e:
-                    print(str(e))
+                except Basket.DoesNotExist:
                     error = 'User does not have a basket.'
             else:
                 error = 'Something went wrong.'
@@ -237,8 +245,7 @@ def baskets(request):
                         message = str(basket_product.quantity) + ' ' + product_name + '\'s are in your basket.'
                     else:
                         message = str(basket_product.quantity) + ' ' + product_name + ' is in your basket.'
-            except BasketProduct.DoesNotExist, e:
-                print(str(e))
+            except BasketProduct.DoesNotExist:
                 error = 'User does not have a basket.'
     elif request.method == 'DELETE':
         basket_product_id = request.GET.get('basket_product_id')
@@ -247,8 +254,7 @@ def baskets(request):
             basket_product = BasketProduct.objects.get(id=basket_product_id)
             basket_product.delete()
             message = product_name + ' has been completely removed from your basket.'
-        except BasketProduct.DoesNotExist, e:
-            print(str(e))
+        except BasketProduct.DoesNotExist:
             error = 'Product could not be removed from your basket.'
     if error:
         return HttpResponseServerError(error)
@@ -270,10 +276,9 @@ def order_summary_view(request):
             for order_product in order_products:
                 order_product.price = order_product.quantity * order_product.product.price
                 order.total += order_product.price
-            context = {'logged_in': True, 'order': order, 'order_products': list(order_products)}
+            context = {'logged_in': True, 'user': request.user, 'order': order, 'order_products': list(order_products)}
             return render(request, 'app/order.html', context)
-        except Order.DoesNotExist, e:
-            print(str(e))
+        except Order.DoesNotExist:
             return HttpResponseServerError('Order does not exist')
     else:
         return redirect('login')
@@ -292,8 +297,10 @@ def checkout(request):
         basket = Basket.objects.get(user=request.user)
         basket_products = BasketProduct.objects.filter(basket=basket)
         order_products = []
+        total = 0
         for basket_product in basket_products:
             order_product = OrderProduct.objects.create(product=basket_product.product, order=order, quantity=basket_product.quantity)
+            order_product.price = order_product.product.price * order_product.quantity
             order_products.append(order_product)
             basket_product.delete()
 
@@ -301,22 +308,28 @@ def checkout(request):
                   request.user.email + '.\nPlease wait while we redirect you to your order summary.'
         try:
             # send email
+            address = Address.objects.get(user=request.user)
             plaintext = get_template('app/email.txt')
             htmly = get_template('app/email.html')
-            d = Context ({'order': message, 'first_name': request.user.first_name, 'last_name': request.user.last_name, 'order_products': order_products})
-            subject, from_email, to = 'Order Confirmation Email', 'island_web_river@outlook.com', request.user.email
+            d = Context ({'order': order,
+                          'first_name': request.user.first_name,
+                          'last_name': request.user.last_name,
+                          'order_products': order_products,
+                          'address': address,
+                          'total': total})
+            subject, from_email, to = 'Order Confirmation Email', 'islandriverhelp@gmail.com', request.user.email
             text_content = plaintext.render(d)
             html_content = htmly.render(d)
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
             return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
-        except Exception, e:
+        except Exception as e:
             print(str(e))
             message = 'Your order ' + str(order.id) + ' has been confirmed, however email could not be sent. ' \
-                                                    '\nPlease wait while we redirect you to your order summary.'
+                                                      '\nPlease wait while we redirect you to your order summary.'
         return JsonResponse({'message': message, 'order_id': order.id, 'next': '/orders/summary/'})
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         error = 'Failed to create order. Redirecting to home.'
     if error:
@@ -342,8 +355,8 @@ class BasketProductList(generics.ListAPIView):
 class RestApiUserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    # permission_classes = (RestApiPermissions,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'email', 'first_name', 'last_name', 'phone')
 
 
@@ -351,7 +364,7 @@ class RestApiCatalogViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Catalog.objects.all()
     serializer_class = CatalogSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'name', 'slug', 'description', 'pub_date')
 
 
@@ -359,7 +372,7 @@ class RestApiProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'category', 'name', 'slug', 'description', 'manufacturer', 'price',
                      'category__id', 'category__name', 'category__slug',
                      'category__catalog__name', 'category__catalog__slug')
@@ -369,7 +382,7 @@ class RestApiCatalogCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CatalogCategory.objects.all()
     serializer_class = CatalogCategorySerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'catalog', 'parent', 'name', 'slug', 'description',
                      'catalog__id', 'catalog__name', 'catalog__slug',)
 
@@ -378,7 +391,7 @@ class RestApiBasketViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Basket.objects.all()
     serializer_class = BasketSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'user',
                      'user__id', 'user__email', 'user__first_name', 'user__last_name', 'user__phone')
 
@@ -387,7 +400,7 @@ class RestApiBasketProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BasketProduct.objects.all()
     serializer_class = BasketProductSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'basket', 'product', 'quantity',
                      'basket__id', 'basket__user__id', 'basket__user__email',
                      'product__id', 'product__name', 'product__slug', 'product__description',)
@@ -397,7 +410,7 @@ class RestApiOrderViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'user', 'date',
                      'user__id', 'user__email', 'user__first_name', 'user__last_name', 'user__phone')
 
@@ -406,7 +419,17 @@ class RestApiOrderProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OrderProduct.objects.all()
     serializer_class = OrderProductSerializer
     permission_classes = (RestApiPermissions,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     filter_fields = ('id', 'product', 'date', 'order',
                      'product__id', 'product__name', 'product__slug', 'product__description',
-                     'order__id', 'o    rder__user__id')
+                     'order__id', 'order__user__id')
+
+
+class RestApiReviewProductViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = (RestApiPermissions,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
+    filter_fields = ('id', 'product', 'user', 'rating', 'comments',
+                     'product__id', 'product__name', 'product__slug', 'product__description',
+                     'user__id', 'user__email', 'user__first_name', 'user__last_name', 'user__phone')

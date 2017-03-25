@@ -56,8 +56,7 @@ ROOT_URLCONF = 'IslandRiver.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +79,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
 }
 
 
@@ -125,9 +124,33 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 AUTH_USER_MODEL = 'app.User'
 LOGIN_REDIRECT_URL = '/shop/men/'
 
-# EMAIL SETTINGS
-EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_HOST_USER = 'island_web_river@outlook.com'
+# OUTLOOK EMAIL SETTINGS
+# EMAIL_HOST = 'smtp-mail.outlook.com'
+# EMAIL_HOST_USER = 'island_web_river@outlook.com'
+# EMAIL_HOST_PASSWORD = 'island123'
+# EMAIL_PORT = '587'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'island_web_river@outlook.com'
+
+# MAHFUZHANNAN EMAIL SETTINGS
+# EMAIL_HOST = 'send.one.com'
+# EMAIL_HOST_USER = 'islandriver@mahfuzhannan.co.uk'
+# EMAIL_HOST_PASSWORD = 'island123'
+# EMAIL_PORT = '465'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'islandriver@mahfuzhannan.co.uk'
+
+# GMAIL EMAIL SETTINGS
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'islandriverhelp@gmail.com'
 EMAIL_HOST_PASSWORD = 'island123'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
+
+REST_FRAMEWORK = {
+    # ... other configurations
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.SearchFilter',
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}

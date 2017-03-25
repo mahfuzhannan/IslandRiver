@@ -102,7 +102,6 @@ class Address(models.Model):
         return '%s, %s, %s' % (self.house, self.line1, self.postcode)
 
 
-
 # class Basket(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     items = models.ManyToManyField(Item)
@@ -232,3 +231,9 @@ class OrderProduct(models.Model):
     def __str__(self):
         return '%s: %s %s (%s)' % (self.id, self.product, self.quantity, self.order)
 
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.DecimalField(max_digits=6, decimal_places=0)
+    comments = models.TextField(blank=True, null=True)

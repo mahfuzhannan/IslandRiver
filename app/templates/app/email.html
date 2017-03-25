@@ -1,51 +1,111 @@
-<html>
-<head></head>
-<body>
-<p> Dear {{ first_name }} {{last_name}}, </p>
-<br/>
-<p>Your order {{ order.id }} has been successfully made.</p>
-<p>You can view your order below:</p>
-<table>
-    <tr>
-        <td>
-            <strong>Product Name</strong>
-        </td>
-        <td>
-            <strong>Price</strong>
-        </td>
-    </tr>
-    {% for order_product in order_products %}
-        <tr>
-            <td>
-                {{ order_product.product.name }}
-            </td>
-            <td>
-                {{ order_product.product.price }}
-            </td>
-        </tr>
-    {% endfor %}
-    <tr>
-        <td>
-            <b>Shipped To</b>
-        </td>
-        <td>
-            {{ address }}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>Total</b>
-        </td>
-        <td>
-            {{ total }}
-        </td>
-    </tr>
-</table>
-</br>
-<a href="http://islandriver-mahfuzhannan.apps.devcloud.eecs.qmul.ac.uk/orders/summary/">Click to see full summary</a>
 
-<p>Many thanks, </p>
-</br>
-<p>Island River Team</p>
+<!DOCTYPE html>
+<html lang="en" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;font-family: sans-serif;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;font-size: 10px;-webkit-tap-highlight-color: rgba(0,0,0,0);">
+<head style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <meta charset="UTF-8" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <meta name="viewport" content="width=device-width, initial-scale=1" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><!-- Optimize mobile viewport -->
+    <title style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">Island River</title>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"></script>
+    <!-- Font awesome -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <!-- Add theme here -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" integrity="sha384-1L94saFXWAvEw88RkpRz8r28eQMvt7kG9ux3DdCqya/P3CfLNtgqzMnyaUa49Pl2" crossorigin="anonymous" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <!-- Fixed Top Navbar-->
+    <link rel="stylesheet" type="text/css" href="/static/app/css/style.css" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+
+</head>
+<body ng-app="app" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin: 0;font-family: Georgia,&quot;Times New Roman&quot;,Times,serif;font-size: 15px;line-height: 1.42857143;color: #777777;background-color: #ffffff;">
+
+<div id="main" class="" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+
+    <div style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+        <div class="header bg-primary text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;text-align: center;color: #fff;background-color: #eb6864;">
+            <h1 class="text-white" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin: 0.67em 0;font-size: 39px;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;">THANK YOU</h1>
+            <p class="text-white lead" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;margin: 0 0 10.5px;margin-bottom: 21px;font-size: 17px;font-weight: 300;line-height: 1.4;">
+                Thanks, for your order Mahfuz. We the best. I like that.
+            </p>
+        </div>
+
+        <div class="header bg-success text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;text-align: center;background-color: #dff0d8;">
+            <h1 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin: 0.67em 0;font-size: 39px;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;">YOUR ORDER NUMBER IS</h1>
+            <h2 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;font-size: 32px;">
+                {{ order.id }}
+            </h2>
+        </div>
+
+        <div class="header bg-info" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;background-color: #d9edf7;">
+            <div id="order" class="sub text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;text-align: center;">
+                <h1 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin: 0.67em 0;font-size: 39px;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;">YOUR ORDER SUMMARY IS</h1>
+            </div>
+            <div class="container" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">
+
+                {% for order_product in order_products %}
+
+                <div class="panel" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 21px;background-color: #ffffff;border: 1px solid transparent;border-radius: 4px;-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);box-shadow: 0 1px 1px rgba(0,0,0,0.05);">
+                    <div class="panel-body" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 15px;">
+                        <div class="col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
+                            <div class="col-xs-4 col-sm-3" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 25%;">
+                                <img src="/static/app/images/product_photo/Black_distressed_cap.jpeg" class="img-responsive img-circle" alt="static/app/images/product_photo/Black_distressed_cap.jpeg" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border: 0;vertical-align: middle;page-break-inside: avoid;display: block;max-width: 100% !important;height: auto;border-radius: 50%;">
+                            </div>
+                            <div class="col-xs-8 col-sm-9" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 75%;">
+                                <div class="row col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
+                                    <h3 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;font-size: 26px;">
+                                        {{ order_product.product.name }}
+                                    </h3>
+                                </div>
+                                <div class="row" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;">
+                                    <div class="col-xs-6" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 50%;">
+                                        <h4 class="text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 10.5px;margin-bottom: 10.5px;font-size: 19px;text-align: center;">
+                                            Qty: {{ order_product.quantity }}
+                                        </h4>
+                                    </div>
+                                    <div class="col-xs-6" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 50%;">
+                                        <h4 class="text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 10.5px;margin-bottom: 10.5px;font-size: 19px;text-align: center;">
+                                            Price: £{{ order_product.price }}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+                <div class="panel" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 21px;background-color: #ffffff;border: 1px solid transparent;border-radius: 4px;-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);box-shadow: 0 1px 1px rgba(0,0,0,0.05);">
+                    <div class="panel-body" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 15px;">
+                        <div class="col-xs-6" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 50%;">
+                            <h3 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;font-size: 26px;">
+                                Order Total: £{{ total }}
+                            </h3>
+                        </div>
+                        <div class="col-xs-6" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 50%;">
+                            <h3 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;font-size: 26px;">
+                                Shipped To: {{ address }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header bg-default text-center" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;text-align: center;">
+            <h1 style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin: 0.67em 0;font-size: 39px;font-family: &quot;News Cycle&quot;,&quot;Arial Narrow Bold&quot;,sans-serif;font-weight: 700;line-height: 1.1;color: #000000;margin-top: 21px;margin-bottom: 10.5px;">
+                <a href="http://islandriver-mahfuzhannan.apps.devcloud.eecs.qmul.ac.uk/orders/summary/" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;background-color: transparent;color: #eb6864;text-decoration: underline;">
+                    SHOW ME MY ORDER! I'M DONE HERE.
+                </a>
+            </h1>
+        </div>
+    </div>
+
+</div>
+
+
 </body>
 </html>
